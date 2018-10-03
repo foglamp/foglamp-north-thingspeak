@@ -24,15 +24,11 @@
 using namespace std;
 using namespace rapidjson;
 
+#define PLUGIN_NAME "ThingSpeak"
 /**
  * Plugin specific default configuration
  */
-#define PLUGIN_DEFAULT_CONFIG "{ " \
-			"\"plugin\": { " \
-				"\"description\": \"ThingSpeak North\", " \
-				"\"type\": \"string\", " \
-				"\"default\": \"thingspeak\" }, " \
-			"\"URL\": { " \
+#define PLUGIN_DEFAULT_CONFIG "\"URL\": { " \
 				"\"description\": \"The URL of the ThingSpeak service\", " \
 				"\"type\": \"string\", " \
 				"\"default\": \"https://api.thingspeak.com/channels\" }, " \
@@ -48,8 +44,11 @@ using namespace rapidjson;
 				    "\"elements\":[" \
 				    "{ \"asset\":\"sinusoid\"," \
 				    "\"reading\":\"sinusoid\"}" \
-				"]} } " \
-		"}"
+				"]} }"
+
+#define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\"}"
+
+#define PLUGIN_DEFAULT_CONFIG_INFO "{" THINGSPEAK_PLUGIN_DESC ", " PLUGIN_DEFAULT_CONFIG "}"
 
 /**
  * The ThingSpeak plugin interface
@@ -60,12 +59,12 @@ extern "C" {
  * The C API plugin information structure
  */
 static PLUGIN_INFORMATION info = {
-	"ThingSpeak",			// Name
+	PLUGIN_NAME,			// Name
 	"1.0.0",			// Version
 	0,				// Flags
 	PLUGIN_TYPE_NORTH,		// Type
 	"1.0.0",			// Interface version
-	PLUGIN_DEFAULT_CONFIG		// Configuration
+	PLUGIN_DEFAULT_CONFIG_INFO   	// Configuration
 };
 
 /**
@@ -76,41 +75,58 @@ PLUGIN_INFORMATION *plugin_info()
 	return &info;
 }
 
+static const map<const string, const string> plugin_configuration = {
+					{
+						"PLUGIN",
+						string(PLUGIN_DEFAULT_CONFIG)
+					},
+				 };
+
+/**
+ * Return default plugin configuration:
+ * plugin specific and types_id
+ */
+const map<const string, const string>& plugin_config()
+{
+	return plugin_configuration;
+}
+
 /**
  * Initialise the plugin with configuration.
  *
  * This funcion is called to get the plugin handle.
  */
-PLUGIN_HANDLE plugin_init(const ConfigCategory* configData)
+PLUGIN_HANDLE plugin_init(map<string, string>&& configData)
 {
-	if (!configData->itemExists("URL"))
+	ConfigCategory configCategory("cfg", configData["GLOBAL_CONFIGURATION"]);
+	if (! configCategory.itemExists("URL"))
 	{
 		Logger::getLogger()->fatal("ThingSpeak plugin must have a URL defined for the ThinkSpeak API");
 		throw exception();
 	}
-	string url = configData->getValue("URL");
-	if (!configData->itemExists("channelId"))
+	string url = configCategory.getValue("URL");
+	if (! configCategory.itemExists("channelId"))
 	{
 		Logger::getLogger()->fatal("ThingSpeak plugin must have a channel ID defined");
 		throw exception();
 	}
-	int channel = atoi(configData->getValue("channelId").c_str());
-	if (!configData->itemExists("fields"))
+	int channel = atoi(configCategory.getValue("channelId").c_str());
+	if (! configCategory.itemExists("fields"))
 	{
 		Logger::getLogger()->fatal("ThingSpeak plugin must have a field list defined");
 		throw exception();
 	}
-	string apiKey = configData->getValue("write_api_key");
+	string apiKey = configCategory.getValue("write_api_key");
 
 	ThingSpeak *thingSpeak = new ThingSpeak(url, channel, apiKey);
 	thingSpeak->connect();
 
-	if (!configData->itemExists("fields"))
+	if (! configCategory.itemExists("fields"))
 	{
 		Logger::getLogger()->fatal("ThingSpeak plugin must have a field list defined");
 		throw exception();
 	}
-	string fields = configData->getValue("fields");
+	string fields = configCategory.getValue("fields");
 	Document doc;
 	doc.Parse(fields.c_str());
 	if (!doc.HasParseError())
