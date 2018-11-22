@@ -40,13 +40,13 @@ using namespace rapidjson;
 				"\"type\": \"string\", \"default\": \"\" }, " \
 			"\"fields\": { " \
 				"\"description\": \"The fields to send ThingSpeak\", " \
-				"\"type\": \"JSON\", \"default\": { " \
-				    "\"elements\":[" \
-				    "{ \"asset\":\"sinusoid\"," \
-				    "\"reading\":\"sinusoid\"}" \
-				"]} }"
+				"\"type\": \"JSON\", \"default\": \"{ " \
+				    "\\\"elements\\\":[" \
+				    "{ \\\"asset\\\":\\\"sinusoid\\\"," \
+				    "\\\"reading\\\":\\\"sinusoid\\\"}" \
+				"]}\" }"
 
-#define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\"}"
+#define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\", \"readonly\": \"true\"}"
 
 #define PLUGIN_DEFAULT_CONFIG_INFO "{" THINGSPEAK_PLUGIN_DESC ", " PLUGIN_DEFAULT_CONFIG "}"
 
