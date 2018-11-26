@@ -32,6 +32,11 @@ using namespace rapidjson;
 				"\"description\": \"The URL of the ThingSpeak service\", " \
 				"\"type\": \"string\", " \
 				"\"default\": \"https://api.thingspeak.com/channels\" }, " \
+			"\"source\": {" \
+				"\"description\": \"Defines the source of the data to be sent on the stream, " \
+				"this may be one of either readings, statistics or audit.\", \"type\": \"enumeration\", " \
+				"\"default\": \"readings\", "\
+				"\"options\": [\"readings\", \"statistics\"]}, " \
 			"\"channelId\": { " \
 				"\"description\": \"The channel id for this thingSpeak channel\", " \
 				"\"type\": \"string\", \"default\": \"0\" }, " \
