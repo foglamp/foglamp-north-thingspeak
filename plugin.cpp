@@ -31,25 +31,25 @@ using namespace rapidjson;
 #define PLUGIN_DEFAULT_CONFIG "\"URL\": { " \
 				"\"description\": \"The URL of the ThingSpeak service\", " \
 				"\"type\": \"string\", " \
-				"\"default\": \"https://api.thingspeak.com/channels\" }, " \
+				"\"default\": \"https://api.thingspeak.com/channels\", \"order\": \"1\", \"displayName\": \"URL\" }, " \
 			"\"source\": {" \
 				"\"description\": \"Defines the source of the data to be sent on the stream, " \
 				"this may be one of either readings, statistics or audit.\", \"type\": \"enumeration\", " \
 				"\"default\": \"readings\", "\
-				"\"options\": [\"readings\", \"statistics\"]}, " \
+				"\"options\": [\"readings\", \"statistics\"], \"order\": \"3\", \"displayName\": \"Source\"}, " \
 			"\"channelId\": { " \
 				"\"description\": \"The channel id for this thingSpeak channel\", " \
-				"\"type\": \"string\", \"default\": \"0\" }, " \
+				"\"type\": \"string\", \"default\": \"0\", \"order\": \"5\", \"displayName\": \"Channel ID\" }, " \
 			"\"write_api_key\": { " \
 				"\"description\": \"The write_api_key supplied by ThingSpeak for this channel\", " \
-				"\"type\": \"string\", \"default\": \"\" }, " \
+				"\"type\": \"string\", \"default\": \"\", \"order\": \"2\", \"displayName\": \"API Key\" }, " \
 			"\"fields\": { " \
 				"\"description\": \"The fields to send ThingSpeak\", " \
 				"\"type\": \"JSON\", \"default\": \"{ " \
 				    "\\\"elements\\\":[" \
 				    "{ \\\"asset\\\":\\\"sinusoid\\\"," \
 				    "\\\"reading\\\":\\\"sinusoid\\\"}" \
-				"]}\" }"
+				"]}\", \"order\": \"4\", \"displayName\": \"Fields\" }"
 
 #define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\", \"readonly\": \"true\"}"
 
