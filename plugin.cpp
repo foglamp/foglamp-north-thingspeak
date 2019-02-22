@@ -20,36 +20,41 @@
 #include <config_category.h>
 #include <storage_client.h>
 #include <rapidjson/document.h>
+#include <version.h>
 
 using namespace std;
 using namespace rapidjson;
 
+#define PLUGIN_NAME "ThingSpeak"
 /**
  * Plugin specific default configuration
  */
-#define PLUGIN_DEFAULT_CONFIG "{ " \
-			"\"plugin\": { " \
-				"\"description\": \"ThingSpeak North\", " \
-				"\"type\": \"string\", " \
-				"\"default\": \"thingspeak\" }, " \
-			"\"URL\": { " \
+#define PLUGIN_DEFAULT_CONFIG "\"URL\": { " \
 				"\"description\": \"The URL of the ThingSpeak service\", " \
 				"\"type\": \"string\", " \
-				"\"default\": \"https://api.thingspeak.com/channels\" }, " \
+				"\"default\": \"https://api.thingspeak.com/channels\", \"order\": \"1\", \"displayName\": \"URL\" }, " \
+			"\"source\": {" \
+				"\"description\": \"Defines the source of the data to be sent on the stream, " \
+				"this may be one of either readings, statistics or audit.\", \"type\": \"enumeration\", " \
+				"\"default\": \"readings\", "\
+				"\"options\": [\"readings\", \"statistics\"], \"order\": \"3\", \"displayName\": \"Source\"}, " \
 			"\"channelId\": { " \
 				"\"description\": \"The channel id for this thingSpeak channel\", " \
-				"\"type\": \"string\", \"default\": \"0\" }, " \
+				"\"type\": \"string\", \"default\": \"0\", \"order\": \"5\", \"displayName\": \"Channel ID\" }, " \
 			"\"write_api_key\": { " \
 				"\"description\": \"The write_api_key supplied by ThingSpeak for this channel\", " \
-				"\"type\": \"string\", \"default\": \"\" }, " \
+				"\"type\": \"string\", \"default\": \"\", \"order\": \"2\", \"displayName\": \"API Key\" }, " \
 			"\"fields\": { " \
 				"\"description\": \"The fields to send ThingSpeak\", " \
-				"\"type\": \"JSON\", \"default\": { " \
-				    "\"elements\":[" \
-				    "{ \"asset\":\"sinusoid\"," \
-				    "\"reading\":\"sinusoid\"}" \
-				"]} } " \
-		"}"
+				"\"type\": \"JSON\", \"default\": \"{ " \
+				    "\\\"elements\\\":[" \
+				    "{ \\\"asset\\\":\\\"sinusoid\\\"," \
+				    "\\\"reading\\\":\\\"sinusoid\\\"}" \
+				"]}\", \"order\": \"4\", \"displayName\": \"Fields\" }"
+
+#define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\", \"readonly\": \"true\"}"
+
+#define PLUGIN_DEFAULT_CONFIG_INFO "{" THINGSPEAK_PLUGIN_DESC ", " PLUGIN_DEFAULT_CONFIG "}"
 
 /**
  * The ThingSpeak plugin interface
@@ -60,12 +65,12 @@ extern "C" {
  * The C API plugin information structure
  */
 static PLUGIN_INFORMATION info = {
-	"ThingSpeak",			// Name
-	"1.0.0",			// Version
+	PLUGIN_NAME,			// Name
+	VERSION,			// Version
 	0,				// Flags
 	PLUGIN_TYPE_NORTH,		// Type
 	"1.0.0",			// Interface version
-	PLUGIN_DEFAULT_CONFIG		// Configuration
+	PLUGIN_DEFAULT_CONFIG_INFO   	// Configuration
 };
 
 /**
@@ -79,9 +84,9 @@ PLUGIN_INFORMATION *plugin_info()
 /**
  * Initialise the plugin with configuration.
  *
- * This funcion is called to get the plugin handle.
+ * This function is called to get the plugin handle.
  */
-PLUGIN_HANDLE plugin_init(const ConfigCategory* configData)
+PLUGIN_HANDLE plugin_init(ConfigCategory* configData)
 {
 	if (!configData->itemExists("URL"))
 	{
