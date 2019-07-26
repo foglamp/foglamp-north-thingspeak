@@ -6,6 +6,30 @@ This is a FogLAMP north plugin for talking to the MathWorks ThingSpeak
 web API. This allows buffered reading to be sent to the ThingSpeak API
 and further analysed in MATLAB. https://thingspeak.com
 
+Configuration
+-------------
+
+The following configuration options exist for the plugin
+
+url
+  The URL of the ThingSpeak API, this should normally be left as the default https://api.thingspeak.com/channels
+
+source
+  The source of data to send, either redings or statistics
+
+channelId
+  The ChannelID has setup in the ThingSpeak interface
+
+write_api_key
+  The write_api_key as obtained from the ThingSPeak interface
+
+fields
+  A defintion of the fields to be send. This is a JSON document with an
+  array called elements, each item in the array is a JSON object with
+  the properties asset and reading. Asset is the asset name and reading
+  is the datapoitn within the asset. The default for this element is an
+  example of how to send data fromthe siusoid plugin.
+
 Build
 -----
 To build FogLAMP "ThingSpeak" C++ filter plugin:
