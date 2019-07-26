@@ -26,35 +26,61 @@ using namespace std;
 using namespace rapidjson;
 
 #define PLUGIN_NAME "ThingSpeak"
+#define FIELDS QUOTE({						\
+		"elements" : [					\
+			{					\
+				"asset" : "sinusoid",		\
+				"reading" : "sinusoid"		\
+			}					\
+			]})
+
 /**
  * Plugin specific default configuration
  */
-#define PLUGIN_DEFAULT_CONFIG "\"URL\": { " \
-				"\"description\": \"The URL of the ThingSpeak service\", " \
-				"\"type\": \"string\", " \
-				"\"default\": \"https://api.thingspeak.com/channels\", \"order\": \"1\", \"displayName\": \"URL\" }, " \
-			"\"source\": {" \
-				"\"description\": \"Defines the source of the data to be sent on the stream, " \
-				"this may be one of either readings, statistics or audit.\", \"type\": \"enumeration\", " \
-				"\"default\": \"readings\", "\
-				"\"options\": [\"readings\", \"statistics\"], \"order\": \"3\", \"displayName\": \"Source\"}, " \
-			"\"channelId\": { " \
-				"\"description\": \"The channel id for this thingSpeak channel\", " \
-				"\"type\": \"string\", \"default\": \"0\", \"order\": \"5\", \"displayName\": \"Channel ID\" }, " \
-			"\"write_api_key\": { " \
-				"\"description\": \"The write_api_key supplied by ThingSpeak for this channel\", " \
-				"\"type\": \"string\", \"default\": \"\", \"order\": \"2\", \"displayName\": \"API Key\" }, " \
-			"\"fields\": { " \
-				"\"description\": \"The fields to send ThingSpeak\", " \
-				"\"type\": \"JSON\", \"default\": \"{ " \
-				    "\\\"elements\\\":[" \
-				    "{ \\\"asset\\\":\\\"sinusoid\\\"," \
-				    "\\\"reading\\\":\\\"sinusoid\\\"}" \
-				"]}\", \"order\": \"4\", \"displayName\": \"Fields\" }"
+static const char *default_config = QUOTE({
+		"plugin": {
+			"description": "ThingSpeak North",
+			"type": "string",
+			"default": PLUGIN_NAME,
+			"readonly": "true"
+			}
+		"URL": {
+			"description": "The URL of the ThingSpeak service",
+			"type": "string",
+			"default": "https://api.thingspeak.com/channels",
+			"order": "1",
+			"displayName": "URL"
+			},
+		"source": {
+			"description": "Defines the source of the data to be sent on the stream",
+			"type": "enumeration",
+			"default": "readings",
+			"options": ["readings", "statistics"],
+		       	"order": "3",
+			"displayName": "Source"
+			},
+		"channelId": { 
+			"description": "The channel id for this thingSpeak channel",
+			"type": "string",
+			"default": "0",
+			"order": "5",
+			"displayName": "Channel ID"
+			},
+		"write_api_key": {
+			"description": "The write_api_key supplied by ThingSpeak for this channel",
+			"type": "string",
+			"default": "",
+			"order": "2","displayName": "API Key"
+			},
+		"fields": {
+			"description": "The fields to send ThingSpeak",
+			"type": "JSON",
+			"default": FIELDS,
+			"order": "4",
+			"displayName": "Fields"
+			}
+	});
 
-#define THINGSPEAK_PLUGIN_DESC "\"plugin\": {\"description\": \"ThingSpeak North\", \"type\": \"string\", \"default\": \"" PLUGIN_NAME "\", \"readonly\": \"true\"}"
-
-#define PLUGIN_DEFAULT_CONFIG_INFO "{" THINGSPEAK_PLUGIN_DESC ", " PLUGIN_DEFAULT_CONFIG "}"
 
 /**
  * The ThingSpeak plugin interface
@@ -70,7 +96,7 @@ static PLUGIN_INFORMATION info = {
 	0,				// Flags
 	PLUGIN_TYPE_NORTH,		// Type
 	"1.0.0",			// Interface version
-	PLUGIN_DEFAULT_CONFIG_INFO   	// Configuration
+	default_config			// Configuration
 };
 
 /**
