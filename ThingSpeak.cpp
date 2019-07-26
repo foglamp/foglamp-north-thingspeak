@@ -130,7 +130,7 @@ ostringstream	payload;
 						first = false;
 						outputDate = true;
 						payload << "{ \"created_at\": \"";
-						payload << (*it)->getAssetDateTime(Reading::FMT_ISO8601) << "\",";
+						payload << (*it)->getAssetDateUserTime(Reading::FMT_ISO8601) << "\",";
 					}
 					else
 					{

@@ -43,7 +43,7 @@ static const char *default_config = QUOTE({
 			"type": "string",
 			"default": PLUGIN_NAME,
 			"readonly": "true"
-			}
+			},
 		"URL": {
 			"description": "The URL of the ThingSpeak service",
 			"type": "string",
