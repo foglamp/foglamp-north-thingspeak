@@ -148,19 +148,34 @@ ostringstream	payload;
 	}
 	payload << "]}";
 
-	char url[100];
-	snprintf(url, sizeof(url), "%s/%d/bulk_update.json", m_url.c_str(),
-			m_channel);
-
-	int errorCode;
-	if ((errorCode = m_https->sendRequest("POST", url, m_headers, payload.str())) == 200 || errorCode == 202)
+	if (first)
 	{
+		Logger::getLogger()->warn("ThingSpeak Nothing to send");
 		return readings.size();
 	}
 	else
 	{
+		char url[100];
+		snprintf(url, sizeof(url), "%s/%d/bulk_update.json", m_url.c_str(),
+				m_channel);
 
-		Logger::getLogger()->error("Failed to send to ThingSpeak %s, errorCode %d", url, errorCode);
-		return 0;
+		try {
+			int errorCode;
+			if ((errorCode = m_https->sendRequest("POST", url, m_headers, payload.str())) == 200 || errorCode == 202)
+			{
+				return readings.size();
+			}
+			else
+			{
+				Logger::getLogger()->error("Failed to send to ThingSpeak %s, errorCode %d", url, errorCode);
+			}
+		} catch (runtime_error& re) {
+			Logger::getLogger()->error("Failed to send to ThingSpeak %s, runtime error: %s", url, re.what());
+		} catch (exception& e) {
+			Logger::getLogger()->error("Failed to send to ThingSpeak %s, exception occured: %s", url, e.what());
+		} catch (...) {
+			Logger::getLogger()->error("Failed to send to ThingSpeak %s, unexpected exception occured", url);
+		}
 	}
+	return 0;
 }
