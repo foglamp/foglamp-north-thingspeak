@@ -1,7 +1,7 @@
 #ifndef _THINGSPEAK_H
 #define _THINGSPEAK_H
 /*
- * FogLAMP ThingSpeak north plugin.
+ * Fledge ThingSpeak north plugin.
  *
  * Copyright (c) 2018 Dianomic Systems
  *      
